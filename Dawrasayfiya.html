@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لائحة الحضور والغياب</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    padding:20px;
+    background:#f5f7fa;
+    direction: rtl;
+}
+
+h2{
+    text-align:center;
+    color:#2c3e50;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:20px;
+    background:white;
+}
+
+th{
+    background:#3498db;
+    color:white;
+    padding:10px;
+    border:1px solid #2980b9;
+}
+
+td{
+    border:1px solid #ddd;
+    padding:10px;
+    text-align:center;
+}
+
+tr:nth-child(even){
+    background:#f2f2f2;
+}
+
+tr:hover{
+    background:#d6eaf8;
+}
+
+select{
+    padding:5px;
+    border-radius:5px;
+    border:1px solid #3498db;
+}
+
+input[type="date"]{
+    padding:5px;
+    border-radius:5px;
+    border:1px solid #3498db;
+}
+
+button{
+    margin-top:20px;
+    padding:10px 20px;
+    background:#27ae60;
+    color:white;
+    border:none;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#219150;
+}
+</style>
+</head>
+
+<body>
+
+<h2>لائحة الحضور والغياب</h2>
+
+<label><b>التاريخ:</b></label>
+<input type="date" id="jour" onchange="chargerJour()">
+
+<table>
+<tr>
+    <th>الاسم</th>
+    <th>الحالة</th>
+</tr>
+
+<tbody id="tableau"></tbody>
+
+</table>
+
+<button onclick="enregistrer()">حفظ</button>
+
+<script>
+
+const personnes = [
+"الشخص 1",
+"الشخص 2",
+"الشخص 3",
+"الشخص 4",
+"الشخص 5",
+"الشخص 6",
+"الشخص 7",
+"الشخص 8",
+"الشخص 9",
+"الشخص 10",
+"الشخص 11",
+"الشخص 12",
+"الشخص 13",
+"الشخص 14",
+"الشخص 15",
+"الشخص 16",
+"الشخص 17",
+"الشخص 18"
+];
+
+const tableau = document.getElementById("tableau");
+
+personnes.forEach((nom,index)=>{
+    tableau.innerHTML += `
+    <tr>
+        <td>${nom}</td>
+        <td>
+            <select id="p${index}">
+                <option value="حاضر">حاضر</option>
+                <option value="غائب">غائب</option>
+            </select>
+        </td>
+    </tr>
+    `;
+});
+
+function enregistrer(){
+    let jour = document.getElementById("jour").value;
+
+    if(!jour){
+        alert("اختر التاريخ أولا");
+        return;
+    }
+
+    let donnees = [];
+
+    personnes.forEach((nom,index)=>{
+        donnees.push(document.getElementById("p"+index).value);
+    });
+
+    localStorage.setItem(jour, JSON.stringify(donnees));
+
+    alert("تم الحفظ بنجاح");
+}
+
+function chargerJour(){
+    let jour = document.getElementById("jour").value;
+
+    let donnees = JSON.parse(localStorage.getItem(jour));
+
+    if(donnees){
+        personnes.forEach((nom,index)=>{
+            document.getElementById("p"+index).value = donnees[index];
+        });
+    }else{
+        personnes.forEach((nom,index)=>{
+            document.getElementById("p"+index).value = "حاضر";
+        });
+    }
+}
+
+window.onload = function(){
+    document.getElementById("jour").valueAsDate = new Date();
+    chargerJour();
+};
+
+</script>
+
+</body>
+</html>
